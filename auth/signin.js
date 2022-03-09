@@ -19,8 +19,9 @@ async function signin(req, res, next) {
     console.log(password);
     try {
       let user = await users.findOne({ where: { username: username } });
-      let valid = bcrypt.compare(password, user.password);
-      if (valid) {
+      const valid = await bcrypt.compare(password,user.password);
+      // console.log(Boolean(valid)); pending promise is equal to true
+      if (valid) { 
         res.status(200).json({
           user: user,
         });
@@ -28,7 +29,7 @@ async function signin(req, res, next) {
         res.send("not valid credentials");
       }
     } catch (error) {
-      next("ops something went wrong");
+      next("not valid credentials");
     }
   } else {
     next("username doesn't exist");
